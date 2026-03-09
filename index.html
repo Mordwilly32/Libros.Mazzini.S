@@ -374,15 +374,25 @@ async function init() {
     const pdfs = items
       .filter(i => i.type === 'file' && i.name.toLowerCase().endsWith('.pdf'))
       .map(i => {
+        const repoName  = info.repo.split('/')[1];
+        const filePath  = (info.subfolder ? info.subfolder + '/' : '') + i.name;
+        const filePathE = (info.subfolder ? info.subfolder + '/' : '') + encodeURIComponent(i.name);
+
         // URL para ABRIR el PDF en el navegador (GitHub Pages lo sirve directamente)
-        const pageURL = `https://${info.user}.github.io/${info.repo.split('/')[1]}/${info.subfolder ? info.subfolder + '/' : ''}${i.name}`;
-        // URL raw para que PDF.js pueda leer los bytes (pasando CORS con el header correcto)
-        const rawURL  = `https://raw.githubusercontent.com/${info.repo}/HEAD/${info.subfolder ? info.subfolder + '/' : ''}${encodeURIComponent(i.name)}`;
+        const pageURL = `https://${info.user}.github.io/${repoName}/${filePath}`;
+
+        // jsDelivr sirve archivos de GitHub con CORS abierto — perfecto para PDF.js
+        const jsdelivrURL = `https://cdn.jsdelivr.net/gh/${info.repo}@HEAD/${filePathE}`;
+
+        // fallback: raw.githubusercontent.com
+        const rawURL = `https://raw.githubusercontent.com/${info.repo}/HEAD/${filePathE}`;
+
         return {
           name: i.name.replace(/\.pdf$/i, ''),
           filename: i.name,
-          pageURL,   // ← se abre con window.open
-          rawURL,    // ← se usa para renderizar la portada
+          pageURL,
+          jsdelivrURL,
+          rawURL,
           size: i.size
         };
       });
@@ -533,31 +543,29 @@ function attachSpin(bookEl, idx) {
    devuelve los headers CORS correctos
 ══════════════════════════════════════════════════ */
 async function loadCover(pdf, idx) {
-  try {
-    const loadingTask = pdfjsLib.getDocument({
-      url: pdf.rawURL,
-      withCredentials: false,
-      cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-      cMapPacked: true
-    });
-    const doc  = await loadingTask.promise;
-    const page = await doc.getPage(1);
-    const vp   = page.getViewport({ scale: 1.4 });
-    const canvas = document.createElement('canvas');
-    canvas.width  = vp.width;
-    canvas.height = vp.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
-
-    const el = document.getElementById(`cv-${idx}`);
-    if (el) {
-      const img = document.createElement('img');
-      img.src = canvas.toDataURL('image/jpeg', .85);
-      el.innerHTML = '';
-      el.appendChild(img);
+  const urls = [pdf.jsdelivrURL, pdf.rawURL].filter(Boolean);
+  for (const url of urls) {
+    try {
+      const doc  = await pdfjsLib.getDocument({
+        url, withCredentials: false,
+        cMapUrl: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/",
+        cMapPacked: true
+      }).promise;
+      const page   = await doc.getPage(1);
+      const vp     = page.getViewport({ scale: 1.4 });
+      const canvas = document.createElement("canvas");
+      canvas.width = vp.width; canvas.height = vp.height;
+      await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+      const el = document.getElementById("cv-"+idx);
+      if (el) {
+        const img = document.createElement("img");
+        img.src = canvas.toDataURL("image/jpeg", .85);
+        el.innerHTML = ""; el.appendChild(img);
+      }
+      return;
+    } catch(e) {
+      console.warn("portada ["+(url.includes("jsdelivr")?"jsdelivr":"raw")+"] "+pdf.name+":", e.message);
     }
-  } catch (e) {
-    // se queda el fallback con color + emoji — sin problema
-    console.warn(`portada ${pdf.name}:`, e.message);
   }
 }
 
