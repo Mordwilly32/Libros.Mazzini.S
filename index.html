@@ -4,284 +4,240 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>📚 Mi Biblioteca</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <style>
-:root {
-  --bg: #0f0a1e;
-  --pink: #ff6eb4;
-  --cyan: #43e8d8;
-  --purple: #b983ff;
-  --yellow: #ffe066;
-  --green: #6fffb0;
-  --orange: #ff9f43;
-}
-
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--bg);
-  min-height: 100vh;
-  overflow-x: hidden;
+  font-family:'Nunito', sans-serif;
+  background:#0d0b1a;
+  color:#fff;
+  overflow-x:hidden;
 }
 
-/* ── fondo ── */
+/* ── fondo estrellado ── */
 .starfield { position:fixed; inset:0; pointer-events:none; z-index:0; }
 .starfield::before {
   content:''; position:absolute; inset:0;
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(185,131,255,.25) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 80%, rgba(67,232,216,.18) 0%, transparent 55%),
-    radial-gradient(ellipse at 60% 10%, rgba(255,110,180,.15) 0%, transparent 45%);
+    radial-gradient(ellipse at 15% 25%, rgba(180,120,255,.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 75%, rgba(60,220,200,.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 55% 5%,  rgba(255,100,180,.12) 0%, transparent 45%);
 }
-.star {
-  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
-  animation: twinkle linear infinite;
-}
-@keyframes twinkle {
-  0%,100%{ opacity:.15; transform:scale(1); }
-  50%    { opacity:1;   transform:scale(1.6); }
-}
-.deco {
-  position:fixed; pointer-events:none; z-index:0;
-  opacity:.12; font-size:2.4rem;
-  animation: floatY ease-in-out infinite;
-}
-@keyframes floatY {
-  0%,100%{ transform:translateY(0) rotate(-5deg); }
-  50%    { transform:translateY(-18px) rotate(5deg); }
-}
+.star { position:fixed; border-radius:50%; pointer-events:none; z-index:0; animation:twinkle linear infinite; }
+@keyframes twinkle { 0%,100%{opacity:.1;transform:scale(1)} 50%{opacity:.9;transform:scale(1.5)} }
 
 /* ── header ── */
 header {
   position:relative; z-index:10;
-  text-align:center;
-  padding: 52px 20px 14px;
+  text-align:center; padding:50px 20px 20px;
 }
-.logo-emoji {
-  font-size:4.5rem; display:block;
-  animation: bounce 2.2s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(255,200,100,.5));
-}
-@keyframes bounce {
-  0%,100%{ transform:translateY(0) rotate(-3deg); }
-  50%    { transform:translateY(-14px) rotate(3deg); }
-}
+.logo-emoji { font-size:5rem; display:block; animation:bounce 2s ease-in-out infinite; filter:drop-shadow(0 0 20px rgba(255,200,80,.5)); }
+@keyframes bounce { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-14px) rotate(3deg)} }
+
 header h1 {
   font-family:'Fredoka One', cursive;
-  font-size: clamp(2.6rem, 7vw, 4.8rem);
-  line-height: 1.05;
-  background: linear-gradient(120deg, var(--yellow), var(--pink), var(--cyan), var(--purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 22px rgba(255,180,100,.35));
-  margin-bottom: 6px;
+  font-size:clamp(3rem,7vw,5rem);
+  background:linear-gradient(120deg,#ffe066,#ff6eb4,#43e8d8,#b983ff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(255,180,80,.3));
+  margin-bottom:8px;
 }
-header p { color:rgba(255,255,255,.4); font-size:.95rem; font-weight:700; }
+header p { color:rgba(255,255,255,.4); font-size:1rem; font-weight:700; }
 
-.counter {
+/* ── secciones ── */
+.section {
   position:relative; z-index:10;
-  text-align:center;
-  margin: 16px 0 8px;
+  max-width:1400px; margin:40px auto 0;
+  padding:0 30px 60px;
+}
+
+.section-header {
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:28px; padding-bottom:14px;
+  border-bottom:2px solid rgba(255,255,255,.07);
+}
+.section-icon { font-size:2rem; }
+.section-title {
   font-family:'Fredoka One', cursive;
-  font-size:1.1rem;
-  color:rgba(255,255,255,.3);
-  min-height:28px;
+  font-size:1.8rem;
 }
-.counter b { color:var(--cyan); }
-
-/* ── shelf area ── */
-#shelfArea {
-  position:relative; z-index:10;
-  padding: 10px 28px 80px;
-  max-width:1300px; margin:0 auto;
-}
-.shelf-row-wrap { margin-bottom: 8px; }
-.books-row {
-  display:flex; flex-wrap:wrap;
-  gap:30px; padding:20px 14px 0;
-  align-items:flex-end;
+.section-sub { color:rgba(255,255,255,.4); font-size:.9rem; font-weight:700; margin-top:2px; }
+.section-badge {
+  margin-left:auto;
+  font-family:'Fredoka One', cursive;
+  font-size:.9rem;
+  padding:4px 14px;
+  border-radius:20px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);
 }
 
-/* ── estante de madera ── */
-.plank {
-  height:22px;
-  background:linear-gradient(180deg,#d4955a 0%,#8B5E3C 35%,#5c3a20 100%);
-  border-radius:0 0 10px 10px; margin-top:-4px;
-  box-shadow:0 10px 28px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,255,255,.18);
-}
-.plank::before {
-  content:''; display:block; height:100%; border-radius:inherit;
-  background:repeating-linear-gradient(90deg,transparent,transparent 38px,rgba(0,0,0,.07) 38px,rgba(0,0,0,.07) 39px);
+/* colores por sección */
+.sec1 .section-title { color:#ff6eb4; text-shadow:0 0 20px rgba(255,110,180,.4); }
+.sec1 .section-badge { color:#ff6eb4; border-color:rgba(255,110,180,.3); }
+.sec2 .section-title { color:#43e8d8; text-shadow:0 0 20px rgba(67,232,216,.4); }
+.sec2 .section-badge { color:#43e8d8; border-color:rgba(67,232,216,.3); }
+
+/* ── grid de libros ── */
+.books-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(170px,1fr));
+  gap:36px 28px;
 }
 
-/* ════════════════════════
-   LIBRO 3D
-════════════════════════ */
+/* ── LIBRO ── */
 .book {
+  display:flex; flex-direction:column; align-items:center; gap:12px;
   cursor:pointer;
-  display:flex; flex-direction:column; align-items:center;
-  animation: popIn .55s cubic-bezier(.175,.885,.32,1.275) both;
+  animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) both;
   --c: #b983ff;
-  user-select:none;
 }
 @keyframes popIn {
-  from{ opacity:0; transform:translateY(28px) scale(.82) rotate(-4deg); }
-  to  { opacity:1; transform:translateY(0)    scale(1)   rotate(0deg); }
+  from{opacity:0;transform:translateY(24px) scale(.85)}
+  to  {opacity:1;transform:translateY(0) scale(1)}
 }
 
+/* escena 3D */
 .book-scene {
-  width:120px; height:168px;
-  perspective:700px;
-  position:relative;
+  width:150px; height:210px;
+  perspective:800px; position:relative;
 }
 
+/* cuerpo 3D que gira */
 .book-body {
-  width:120px; height:168px;
+  width:150px; height:210px;
   position:relative;
   transform-style:preserve-3d;
-  transform: rotateX(4deg) rotateY(-25deg);
+  transform:rotateX(3deg) rotateY(-22deg);
   will-change:transform;
-  filter: drop-shadow(4px 12px 20px rgba(0,0,0,.75));
-  transition: filter .3s;
+  filter:drop-shadow(5px 14px 22px rgba(0,0,0,.8));
+  transition:filter .3s;
 }
-.book-body.spinning {
-  filter: drop-shadow(0 20px 40px rgba(0,0,0,.9)) drop-shadow(0 0 28px var(--c));
+.book-body.lit {
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,.9)) drop-shadow(0 0 30px var(--c));
 }
 
-/* cara frontal */
+/* CARA FRONTAL — aquí va la portada */
 .b-front {
   position:absolute;
-  width:120px; height:168px;
-  border-radius:3px 7px 7px 3px;
+  width:150px; height:210px;
+  transform:translateZ(22px);
+  border-radius:3px 8px 8px 3px;
   overflow:hidden;
   background:var(--c);
-  transform:translateZ(20px);
   backface-visibility:hidden;
 }
-/* canvas de la portada */
+/* canvas ocupa el 100% de la cara */
 .b-front canvas {
-  width:100%; height:100%;
-  display:block;
+  position:absolute; inset:0;
+  width:100% !important;
+  height:100% !important;
   object-fit:cover;
+  display:block;
 }
-/* fallback */
+/* fallback cuando no hay portada */
 .b-fallback {
   width:100%; height:100%;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  gap:8px; padding:12px 8px;
-  background:linear-gradient(140deg, var(--c), color-mix(in srgb,var(--c),#000 45%));
+  gap:10px; padding:14px;
+  background:linear-gradient(135deg, var(--c), color-mix(in srgb,var(--c),#000 50%));
 }
-.b-fallback .fe { font-size:2.2rem; }
+.b-fallback .fe { font-size:2.6rem; }
 .b-fallback .ft {
   font-family:'Fredoka One',cursive;
-  font-size:.75rem; color:rgba(255,255,255,.95);
-  text-align:center; line-height:1.25;
+  font-size:.8rem; color:rgba(255,255,255,.95);
+  text-align:center; line-height:1.3;
   word-break:break-word;
-  text-shadow:0 1px 5px rgba(0,0,0,.4);
 }
-/* brillo */
+/* brillo encima */
 .b-front::after {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);
+  content:''; position:absolute; inset:0; z-index:4;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 50%);
   pointer-events:none; border-radius:inherit;
-  z-index:3;
 }
 
 /* lomo */
 .b-spine {
-  position:absolute;
-  width:20px; height:168px;
-  left:0; top:0;
-  transform: rotateY(-90deg) translateX(-20px);
-  transform-origin: left center;
+  position:absolute; width:22px; height:210px; left:0; top:0;
+  transform:rotateY(-90deg) translateX(-22px);
+  transform-origin:left center;
   background:linear-gradient(90deg,
-    color-mix(in srgb,var(--c),#000 65%),
-    color-mix(in srgb,var(--c),#000 40%)
-  );
+    color-mix(in srgb,var(--c),#000 70%),
+    color-mix(in srgb,var(--c),#000 45%));
   backface-visibility:hidden;
 }
-
 /* trasera */
 .b-back {
-  position:absolute;
-  width:120px; height:168px;
-  background:color-mix(in srgb,var(--c),#000 60%);
-  transform:translateZ(-20px);
-  border-radius:7px 3px 3px 7px;
+  position:absolute; width:150px; height:210px;
+  transform:translateZ(-22px);
+  background:color-mix(in srgb,var(--c),#000 65%);
+  border-radius:8px 3px 3px 8px;
   backface-visibility:hidden;
 }
-
-/* tapa sup/inf */
+/* tapas */
 .b-top {
-  position:absolute; width:120px; height:20px; top:0; left:0;
-  background:color-mix(in srgb,var(--c),#000 45%);
-  transform:rotateX(90deg) translateY(-10px);
-  transform-origin:top center;
-  backface-visibility:hidden;
+  position:absolute; width:150px; height:22px; top:0; left:0;
+  background:color-mix(in srgb,var(--c),#000 50%);
+  transform:rotateX(90deg) translateY(-11px);
+  transform-origin:top center; backface-visibility:hidden;
 }
 .b-bottom {
-  position:absolute; width:120px; height:20px; bottom:0; left:0;
-  background:color-mix(in srgb,var(--c),#000 50%);
-  transform:rotateX(-90deg) translateY(10px);
-  transform-origin:bottom center;
-  backface-visibility:hidden;
+  position:absolute; width:150px; height:22px; bottom:0; left:0;
+  background:color-mix(in srgb,var(--c),#000 55%);
+  transform:rotateX(-90deg) translateY(11px);
+  transform-origin:bottom center; backface-visibility:hidden;
 }
 
 /* sombra suelo */
 .book-shadow {
-  width:90px; height:10px;
-  background:radial-gradient(ellipse,rgba(0,0,0,.6) 0%,transparent 70%);
-  filter:blur(3px); margin-top:2px;
+  width:100px; height:12px;
+  background:radial-gradient(ellipse,rgba(0,0,0,.65) 0%,transparent 70%);
+  filter:blur(4px); margin-top:-2px;
   transition:all .3s;
 }
-.book.hovered .book-shadow { width:110px; opacity:.3; transform:translateY(6px); }
+.book.hovered .book-shadow { width:120px; opacity:.3; transform:translateY(6px); }
 
-/* título */
-.book-label { margin-top:9px; width:120px; text-align:center; }
-.book-label span {
-  font-weight:800; font-size:.7rem;
-  color:rgba(255,255,255,.8);
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden; line-height:1.3;
-  transition:color .25s;
-}
-.book.hovered .book-label span { color:var(--c); }
-
-/* badge abrir */
+/* badge "abrir" */
 .open-tag {
-  position:absolute; bottom:7px; left:50%; transform:translateX(-50%);
-  background:rgba(0,0,0,.7); border:1px solid var(--c);
+  position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,.75); border:1px solid var(--c);
   color:var(--c); font-family:'Fredoka One',cursive;
-  font-size:.58rem; padding:2px 9px; border-radius:20px;
-  opacity:0; transition:opacity .25s; pointer-events:none;
+  font-size:.65rem; padding:3px 10px; border-radius:20px;
+  opacity:0; transition:opacity .2s; pointer-events:none;
   white-space:nowrap; z-index:5;
 }
 .book.hovered .open-tag { opacity:1; }
+
+/* título bajo el libro */
+.book-name {
+  width:150px; text-align:center;
+  font-weight:800; font-size:.82rem;
+  color:rgba(255,255,255,.85);
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  transition:color .2s;
+  cursor:pointer;
+}
+.book.hovered .book-name { color:var(--c); }
 
 /* ── footer ── */
 footer {
   position:relative; z-index:10;
   text-align:center; padding:30px;
-  color:rgba(255,255,255,.15);
-  font-family:'Fredoka One',cursive;
-  font-size:.85rem; letter-spacing:.05em;
+  color:rgba(255,255,255,.12);
+  font-family:'Fredoka One',cursive; font-size:.85rem;
 }
 </style>
 </head>
 <body>
 
 <div class="starfield"></div>
-<div class="deco" style="top:8%;left:3%;animation-duration:6s">📖</div>
-<div class="deco" style="top:30%;right:4%;animation-duration:8s;animation-delay:1s">✨</div>
-<div class="deco" style="top:55%;left:2%;animation-duration:7s;animation-delay:2s">🌙</div>
-<div class="deco" style="top:75%;right:5%;animation-duration:9s;animation-delay:.5s">⭐</div>
-<div class="deco" style="top:88%;left:8%;animation-duration:5.5s;animation-delay:3s">🔖</div>
 
 <header>
   <span class="logo-emoji">📚</span>
@@ -289,17 +245,44 @@ footer {
   <p>haz clic en un libro para abrirlo ✨</p>
 </header>
 
-<div class="counter" id="counter">cargando...</div>
-<div id="shelfArea"></div>
+<!-- ══ SECCIÓN 1 ══ -->
+<div class="section sec1">
+  <div class="section-header">
+    <span class="section-icon">💻</span>
+    <div>
+      <div class="section-title">Sección 1 — Libros de Programación</div>
+      <div class="section-sub">lenguajes, algoritmos y desarrollo web</div>
+    </div>
+    <div class="section-badge" id="badge1">cargando...</div>
+  </div>
+  <div class="books-grid" id="grid1"></div>
+</div>
 
-<footer>made by: pixeltoast</footer>
+<!-- ══ SECCIÓN 2 ══ -->
+<div class="section sec2">
+  <div class="section-header">
+    <span class="section-icon">🌐</span>
+    <div>
+      <div class="section-title">Sección 2 — Libros Extras</div>
+      <div class="section-sub">más recursos y lecturas</div>
+    </div>
+    <div class="section-badge" id="badge2">cargando...</div>
+  </div>
+  <div class="books-grid" id="grid2"></div>
+</div>
+
+<footer>made by: pixeltoast 🍞</footer>
 
 <script>
-/* ══════════════════════════════════════════
-   CONFIGURACIÓN — editá esta lista con tus PDFs
-   (misma carpeta que el index.html, o poné la ruta relativa)
-══════════════════════════════════════════ */
-const BOOKS = [
+/* ═══════════════════════════════════════════════════
+   CONFIGURACIÓN
+   — Editá los arrays con tus archivos PDF
+   — PDF_FOLDER1 = carpeta de la sección 1
+   — PDF_FOLDER2 = carpeta de la sección 2
+═══════════════════════════════════════════════════ */
+
+const PDF_FOLDER1 = "libros/";   // carpeta sección 1
+const BOOKS1 = [
   "MEBO_memoria.pdf",
   "Programaci-n-Web-del-Frontend-al-Backend-Ricardo-Javier-Cel-P-rraga-Miguel-Fabricio-Bon-Andrade-Aldo-Patricio-Mora-Olivero.pdf",
   "Algoritmos-y-programaci-n-gu-a-para-docentes-Juan-Carlos-L-pez-Garc-a.pdf",
@@ -312,15 +295,22 @@ const BOOKS = [
   "programacion_web.pdf"
 ];
 
-/* carpeta donde están los PDFs — dejá "" si están en la misma carpeta que index.html */
-const PDF_FOLDER = "libros/";
+const PDF_FOLDER2 = "libros2/";  // carpeta sección 2
+const BOOKS2 = [
+  // ponés acá los PDFs de tu carpeta libros2/
+  // ejemplo:
+  // "mi-libro.pdf",
+  // "otro-libro.pdf",
+];
 
-/* ══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════ */
 
-const COLORS = ['#ff6eb4','#b983ff','#43e8d8','#ffe066','#6fffb0','#ff9f43',
-                '#4facfe','#f093fb','#43e97b','#fa709a','#a18cd1','#fda085',
-                '#96fbc4','#f6d365','#89f7fe'];
-const EMOJIS = ['📖','📕','📗','📘','📙','📔','📓','📒','🗒️','📃'];
+const COLORS = [
+  '#ff6eb4','#b983ff','#43e8d8','#ffe066','#6fffb0','#ff9f43',
+  '#4facfe','#f093fb','#43e97b','#fa709a','#a18cd1','#fda085',
+  '#96fbc4','#f6d365','#89f7fe','#ff8c69','#c39bd3','#7dcea0'
+];
+const EMOJIS = ['📖','📕','📗','📘','📙','📔','📓','📒','📃','🗒️','📜','📄'];
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
@@ -329,7 +319,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 (()=>{
   const cols=['#ffe066','#ff9f43','#ff6eb4','#43e8d8','#b983ff','#fff'];
   const sf=document.querySelector('.starfield');
-  for(let i=0;i<90;i++){
+  for(let i=0;i<100;i++){
     const el=document.createElement('div'); el.className='star';
     const sz=1+Math.random()*2.5, c=cols[Math.floor(Math.random()*cols.length)];
     el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;background:${c};box-shadow:0 0 ${sz*3}px ${c};animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*6}s`;
@@ -337,60 +327,69 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   }
 })();
 
-/* ══════════════════════════════════════════
-   RENDER ESTANTERÍA
-══════════════════════════════════════════ */
-function renderShelf() {
-  const area = document.getElementById('shelfArea');
-  const ROW  = 7;
-  document.getElementById('counter').innerHTML =
-    `<b>${BOOKS.length}</b> libro${BOOKS.length!==1?'s':''} en la biblioteca ✨`;
-
-  for (let i = 0; i < BOOKS.length; i += ROW) {
-    const chunk = BOOKS.slice(i, i + ROW);
-    const wrap  = document.createElement('div');
-    wrap.className = 'shelf-row-wrap';
-
-    const row = document.createElement('div');
-    row.className = 'books-row';
-
-    chunk.forEach((filename, j) => {
-      const gi    = i + j;
-      const color = COLORS[gi % COLORS.length];
-      const emoji = EMOJIS[gi % EMOJIS.length];
-      row.appendChild(makeBook(filename, gi, color, emoji));
-    });
-
-    const plank = document.createElement('div');
-    plank.className = 'plank';
-    wrap.appendChild(row);
-    wrap.appendChild(plank);
-    area.appendChild(wrap);
-  }
-
-  /* cargar portadas DESPUÉS de insertar en el DOM */
-  BOOKS.forEach((filename, i) => loadCover(filename, i));
+/* ═══════════════════════════════════════════════════
+   INICIAR
+═══════════════════════════════════════════════════ */
+function init() {
+  renderSection('grid1', 'badge1', BOOKS1, PDF_FOLDER1, 0);
+  renderSection('grid2', 'badge2', BOOKS2, PDF_FOLDER2, BOOKS1.length);
 }
 
-/* ══════════════════════════════════════════
-   CREAR LIBRO
-══════════════════════════════════════════ */
-function makeBook(filename, idx, color, emoji) {
-  const name = filename.replace(/\.pdf$/i, '').replace(/-/g,' ');
-  const url  = PDF_FOLDER + filename;
+/* ═══════════════════════════════════════════════════
+   RENDER DE UNA SECCIÓN
+═══════════════════════════════════════════════════ */
+function renderSection(gridId, badgeId, books, folder, colorOffset) {
+  const grid  = document.getElementById(gridId);
+  const badge = document.getElementById(badgeId);
+
+  if (books.length === 0) {
+    grid.innerHTML = `<p style="color:rgba(255,255,255,.25);font-size:.9rem;padding:10px 0">
+      Agregá PDFs al array y a la carpeta <code style="color:#43e8d8">${folder}</code> para ver libros aquí 📂</p>`;
+    badge.textContent = '0 libros';
+    return;
+  }
+
+  badge.textContent = `${books.length} libro${books.length!==1?'s':''}`;
+
+  books.forEach((filename, i) => {
+    const gi    = (colorOffset + i) % COLORS.length;
+    const color = COLORS[gi];
+    const emoji = EMOJIS[gi % EMOJIS.length];
+    const id    = `${gridId}-${i}`;
+    grid.appendChild(makeBook(filename, folder, id, color, emoji, i * 60));
+  });
+
+  /* cargar portadas después de renderizar */
+  books.forEach((filename, i) => {
+    loadCover(folder + filename, `${gridId}-${i}`);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   CREAR ELEMENTO LIBRO
+═══════════════════════════════════════════════════ */
+function makeBook(filename, folder, id, color, emoji, delay) {
+  /* nombre limpio para mostrar */
+  const raw  = filename.replace(/\.pdf$/i,'');
+  /* quita guiones/underscores y acorta */
+  const name = raw.replace(/[-_]/g,' ').replace(/\s{2,}/g,' ').trim();
+  /* versión corta para el título visual (máx 40 chars) */
+  const shortName = name.length > 45 ? name.substring(0,43)+'…' : name;
+
+  const url  = folder + filename;
 
   const book = document.createElement('div');
   book.className = 'book';
   book.style.setProperty('--c', color);
-  book.style.animationDelay = (idx * .07).toFixed(2) + 's';
+  book.style.animationDelay = (delay/1000).toFixed(2)+'s';
 
   book.innerHTML = `
     <div class="book-scene">
-      <div class="book-body" id="body-${idx}">
-        <div class="b-front" id="front-${idx}">
-          <div class="b-fallback">
+      <div class="book-body" id="body-${id}">
+        <div class="b-front" id="front-${id}">
+          <div class="b-fallback" id="fallback-${id}">
             <span class="fe">${emoji}</span>
-            <span class="ft">${esc(name)}</span>
+            <span class="ft">${esc(shortName)}</span>
           </div>
         </div>
         <div class="b-spine"></div>
@@ -398,99 +397,91 @@ function makeBook(filename, idx, color, emoji) {
         <div class="b-top"></div>
         <div class="b-bottom"></div>
       </div>
-      <div class="open-tag">abrir 📄</div>
+      <div class="open-tag">📄 abrir</div>
     </div>
     <div class="book-shadow"></div>
-    <div class="book-label"><span>${esc(name)}</span></div>`;
+    <div class="book-name">${esc(shortName)}</div>`;
 
-  /* ── efecto 3D con el mouse ── */
-  attachSpin(book, idx);
-
-  /* ── clic abre el PDF en nueva pestaña ── */
+  attachSpin(book, id);
   book.addEventListener('click', () => window.open(url, '_blank'));
-
   return book;
 }
 
-/* ══════════════════════════════════════════
-   SPIN — el libro sigue al cursor en 3D
-══════════════════════════════════════════ */
-function attachSpin(bookEl, idx) {
+/* ═══════════════════════════════════════════════════
+   GIRO 3D — sigue el cursor
+═══════════════════════════════════════════════════ */
+function attachSpin(bookEl, id) {
   const scene = bookEl.querySelector('.book-scene');
-  let targetX = 4, targetY = -25;
-  let currentX = 4, currentY = -25;
-  let raf = null, hovering = false;
+  let tX=3, tY=-22, cX=3, cY=-22;
+  let raf=null, over=false;
 
-  function lerp(a, b, t) { return a + (b - a) * t; }
-
-  function tick() {
-    currentX = lerp(currentX, targetX, .12);
-    currentY = lerp(currentY, targetY, .12);
-    const b = document.getElementById('body-' + idx);
-    if (b) b.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
-    const stillMoving = Math.abs(currentX - targetX) > .05 || Math.abs(currentY - targetY) > .05;
-    raf = (stillMoving || hovering) ? requestAnimationFrame(tick) : null;
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  function tick(){
+    cX=lerp(cX,tX,.11); cY=lerp(cY,tY,.11);
+    const b=document.getElementById('body-'+id);
+    if(b) b.style.transform=`rotateX(${cX}deg) rotateY(${cY}deg)`;
+    const moving=Math.abs(cX-tX)>.04||Math.abs(cY-tY)>.04;
+    raf=(moving||over)?requestAnimationFrame(tick):null;
   }
 
-  scene.addEventListener('mouseenter', () => {
-    hovering = true;
-    bookEl.classList.add('hovered');
-    document.getElementById('body-' + idx)?.classList.add('spinning');
-    if (!raf) raf = requestAnimationFrame(tick);
+  scene.addEventListener('mouseenter',()=>{
+    over=true; bookEl.classList.add('hovered');
+    document.getElementById('body-'+id)?.classList.add('lit');
+    if(!raf) raf=requestAnimationFrame(tick);
   });
-
-  scene.addEventListener('mousemove', e => {
-    const r  = scene.getBoundingClientRect();
-    const nx = (e.clientX - r.left)  / r.width  - .5;
-    const ny = (e.clientY - r.top)   / r.height - .5;
-    targetY  =  nx * 80;
-    targetX  = -ny * 50;
+  scene.addEventListener('mousemove',e=>{
+    const r=scene.getBoundingClientRect();
+    tY=((e.clientX-r.left)/r.width-.5)*80;
+    tX=-((e.clientY-r.top)/r.height-.5)*50;
   });
-
-  scene.addEventListener('mouseleave', () => {
-    hovering = false;
-    bookEl.classList.remove('hovered');
-    document.getElementById('body-' + idx)?.classList.remove('spinning');
-    targetX = 4; targetY = -25;
-    if (!raf) raf = requestAnimationFrame(tick);
+  scene.addEventListener('mouseleave',()=>{
+    over=false; bookEl.classList.remove('hovered');
+    document.getElementById('body-'+id)?.classList.remove('lit');
+    tX=3; tY=-22;
+    if(!raf) raf=requestAnimationFrame(tick);
   });
 }
 
-/* ══════════════════════════════════════════
-   CARGAR PORTADA CON PDF.js
-   Los PDFs están en el mismo dominio → sin CORS
-══════════════════════════════════════════ */
-async function loadCover(filename, idx) {
-  const url  = PDF_FOLDER + filename;
-  const front = document.getElementById('front-' + idx);
-  if (!front) return;
-
+/* ═══════════════════════════════════════════════════
+   CARGAR PORTADA — renderiza la primera página del PDF
+   en un canvas y lo pega dentro de la cara frontal.
+   Escala alta (1.5) para que se vea nítido.
+═══════════════════════════════════════════════════ */
+async function loadCover(url, id) {
   try {
-    const pdf      = await pdfjsLib.getDocument(url).promise;
-    const page     = await pdf.getPage(1);
-    const viewport = page.getViewport({ scale: 0.5 });
+    const pdf  = await pdfjsLib.getDocument(url).promise;
+    const page = await pdf.getPage(1);
 
-    const canvas   = document.createElement('canvas');
-    canvas.width   = viewport.width;
-    canvas.height  = viewport.height;
+    /* renderizar a resolución 2× para nitidez */
+    const SCALE    = 1.5;
+    const viewport = page.getViewport({ scale: SCALE });
 
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    const canvas = document.createElement('canvas');
+    canvas.width  = viewport.width;
+    canvas.height = viewport.height;
 
-    /* reemplazar el fallback con el canvas */
-    front.innerHTML = '';
-    front.appendChild(canvas);
+    await page.render({
+      canvasContext: canvas.getContext('2d'),
+      viewport
+    }).promise;
+
+    /* insertar canvas en la cara frontal */
+    const front    = document.getElementById('front-' + id);
+    const fallback = document.getElementById('fallback-' + id);
+    if (front && fallback) {
+      fallback.remove();           // quitar fallback
+      front.appendChild(canvas);  // poner portada real
+    }
 
   } catch(e) {
-    /* se queda el fallback de color + emoji — no pasa nada */
-    console.warn('portada:', filename, e.message);
+    /* fallback de color + emoji — ok si el PDF no carga */
+    console.warn('[portada]', url, '—', e.message);
   }
 }
 
-function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-renderShelf();
+init();
 </script>
 </body>
 </html>
